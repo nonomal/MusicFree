@@ -2,6 +2,8 @@ import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
     BackHandler,
     DeviceEventEmitter,
+    EmitterSubscription,
+    Keyboard,
     KeyboardAvoidingView,
     NativeEventSubscription,
     Pressable,
@@ -16,13 +18,14 @@ import Animated, {
     useAnimatedStyle,
     useSharedValue,
     withTiming,
+    EasingFunction,
 } from 'react-native-reanimated';
 import useColors from '@/hooks/useColors';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import useOrientation from '@/hooks/useOrientation';
 import {panelInfoStore} from '../usePanel';
 
-const ANIMATION_EASING: Animated.EasingFunction = Easing.out(Easing.exp);
+const ANIMATION_EASING: EasingFunction = Easing.out(Easing.exp);
 const ANIMATION_DURATION = 250;
 
 const timingConfig = {
@@ -34,10 +37,16 @@ interface IPanelBaseProps {
     keyboardAvoidBehavior?: 'height' | 'padding' | 'position' | 'none';
     height?: number;
     renderBody: (loading: boolean) => JSX.Element;
+    awareKeyboard?: boolean;
 }
 
 export default function (props: IPanelBaseProps) {
-    const {height = vh(60), renderBody, keyboardAvoidBehavior} = props;
+    const {
+        height = vh(60),
+        renderBody,
+        keyboardAvoidBehavior,
+        awareKeyboard,
+    } = props;
     const snapPoint = useSharedValue(0);
 
     const colors = useColors();
@@ -46,15 +55,19 @@ export default function (props: IPanelBaseProps) {
     const safeAreaInsets = useSafeAreaInsets();
     const orientation = useOrientation();
     const useAnimatedBase = useMemo(
-        () => (orientation === 'horizonal' ? rpx(750) : height),
+        () => (orientation === 'horizontal' ? rpx(750) : height),
         [orientation],
     );
+
     const backHandlerRef = useRef<NativeEventSubscription>();
 
     const hideCallbackRef = useRef<Function[]>([]);
 
+    const [keyboardHeight, setKeyboardHeight] = useState(0);
+
     useEffect(() => {
         snapPoint.value = withTiming(1, timingConfig);
+
         timerRef.current = setTimeout(() => {
             if (loading) {
                 // 兜底
@@ -62,7 +75,7 @@ export default function (props: IPanelBaseProps) {
             }
         }, 400);
         if (backHandlerRef.current) {
-            backHandlerRef.current?.remove();
+            backHandlerRef.current.remove();
             backHandlerRef.current = undefined;
         }
         backHandlerRef.current = BackHandler.addEventListener(
@@ -83,6 +96,24 @@ export default function (props: IPanelBaseProps) {
             },
         );
 
+        let keyboardDidShowListener: EmitterSubscription;
+        let keyboardDidHideListener: EmitterSubscription;
+        if (awareKeyboard) {
+            keyboardDidShowListener = Keyboard.addListener(
+                'keyboardDidShow',
+                event => {
+                    setKeyboardHeight(event.endCoordinates.height);
+                },
+            );
+
+            keyboardDidHideListener = Keyboard.addListener(
+                'keyboardDidHide',
+                () => {
+                    setKeyboardHeight(0);
+                },
+            );
+        }
+
         return () => {
             if (timerRef.current) {
                 clearTimeout(timerRef.current);
@@ -93,12 +124,14 @@ export default function (props: IPanelBaseProps) {
                 backHandlerRef.current = undefined;
             }
             listenerSubscription.remove();
+            keyboardDidShowListener?.remove();
+            keyboardDidHideListener?.remove();
         };
     }, []);
 
     const maskAnimated = useAnimatedStyle(() => {
         return {
-            opacity: withTiming(snapPoint.value * 0.5, timingConfig),
+            opacity: snapPoint.value * 0.5,
         };
     });
 
@@ -107,16 +140,10 @@ export default function (props: IPanelBaseProps) {
             transform: [
                 orientation === 'vertical'
                     ? {
-                          translateY: withTiming(
-                              (1 - snapPoint.value) * useAnimatedBase,
-                              timingConfig,
-                          ),
+                          translateY: (1 - snapPoint.value) * useAnimatedBase,
                       }
                     : {
-                          translateX: withTiming(
-                              (1 - snapPoint.value) * useAnimatedBase,
-                              timingConfig,
-                          ),
+                          translateX: (1 - snapPoint.value) * useAnimatedBase,
                       },
             ],
         };
@@ -137,9 +164,14 @@ export default function (props: IPanelBaseProps) {
     useAnimatedReaction(
         () => snapPoint.value,
         (result, prevResult) => {
-            if (prevResult && result > prevResult && result > 0.8) {
+            if (
+                ((prevResult !== null && result > prevResult) ||
+                    prevResult === null) &&
+                result > 0.8
+            ) {
                 runOnJS(mountPanel)();
             }
+
             if (prevResult && result < prevResult && result === 0) {
                 runOnJS(unmountPanel)();
             }
@@ -154,9 +186,10 @@ export default function (props: IPanelBaseProps) {
                 {
                     backgroundColor: colors.backdrop,
                     height:
-                        orientation === 'horizonal'
+                        orientation === 'horizontal'
                             ? vh(100) - safeAreaInsets.top
-                            : height,
+                            : height -
+                              (isFinite(keyboardHeight) ? keyboardHeight : 0),
                 },
                 panelAnimated,
             ]}>

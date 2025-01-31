@@ -7,11 +7,11 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeDrawer from './components/drawer';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import StatusBar from '@/components/base/statusBar';
-import HorizonalSafeAreaView from '@/components/base/horizonalSafeAreaView';
+import HorizontalSafeAreaView from '@/components/base/horizontalSafeAreaView.tsx';
 import globalStyle from '@/constants/globalStyle';
 import Theme from '@/core/theme';
 import HomeBody from './components/homeBody';
-import HomeBodyHorizonal from './components/homeBodyHorizonal';
+import HomeBodyHorizontal from './components/homeBodyHorizontal';
 import useOrientation from '@/hooks/useOrientation';
 
 function Home() {
@@ -20,16 +20,16 @@ function Home() {
     return (
         <SafeAreaView edges={['top', 'bottom']} style={styles.appWrapper}>
             <HomeStatusBar />
-            <HorizonalSafeAreaView style={globalStyle.flex1}>
+            <HorizontalSafeAreaView style={globalStyle.flex1}>
                 <>
                     <NavBar />
                     {orientation === 'vertical' ? (
                         <HomeBody />
                     ) : (
-                        <HomeBodyHorizonal />
+                        <HomeBodyHorizontal />
                     )}
                 </>
-            </HorizonalSafeAreaView>
+            </HorizontalSafeAreaView>
             <MusicBar />
         </SafeAreaView>
     );
@@ -52,7 +52,7 @@ function HomeStatusBar() {
 //         <ScrollView
 //             style={[
 //                 styles.appWrapper,
-//                 orientation === 'horizonal' ? styles.flexRow : null,
+//                 orientation === 'horizontal' ? styles.flexRow : null,
 //             ]}>
 //             <Operations orientation={orientation} />
 //         </ScrollView>

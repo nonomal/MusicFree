@@ -2,7 +2,7 @@
 
 > [!CAUTION]
 > 👎 小米/华为/vivo等<ins>应用市场的 MusicFree </ins>和本软件无关，**是套用本软件名称和 Logo 的广告软件**。
-> 
+>
 > 👎 速悦音乐基于本软件二次开发，改动点仅仅是内置插件、修改一些 UI 以及引流，**并未遵守本项目的开源协议，且拒绝沟通**。
 
 ---
@@ -17,10 +17,10 @@
 
 ![微信公众号](./src/assets/imgs/wechat_channel.jpg)
 
-软件下载方式、插件使用说明、插件开发文档可去站点 [https://musicfree.upup.fun](https://musicfree.upup.fun) 查看。
+软件下载方式、插件使用说明、插件开发文档可去站点 [https://musicfree.catcat.work](https://musicfree.catcat.work) 查看。
 
 > [!NOTE]
-> - 如果你在其他的平台看到收费版/无广告版/破解版，都是假的，本来就是开源项目，**遇到收费版请直接举报**；  
+> - 如果你在其他的平台看到收费版/无广告版/破解版，都是假的，本来就是开源项目，**遇到收费版请直接举报**；
 > - 软件首先是自用，顺带分享出来希望可以帮助到有需要的人；是业余作品，会尽量保持维护，不过每天能写的时间有限（半小时左右），目测会有很长一段时间处于不稳定测试版本，且更新频率不定，请谨慎使用；
 > - 软件的第三方插件、及其所产生的数据与本软件无关，请合理合法使用，可能产生的版权数据请及时删除。
 > - **请不要以 VIP/破解版为噱头进行宣传**，示例仓库基于互联网公开接口封装，并**过滤掉所有 VIP、试听、付费歌曲**，且示例仓库以后也**不会提供具备破解功能的插件**；
@@ -28,13 +28,12 @@
 
 
 ## 项目使用约定：
-本项目基于 GPL 3.0 协议开源，不禁止二次分发，但使用代码时请遵守如下规则：
+本项目基于 AGPL 3.0 协议开源，使用此项目时请遵守开源协议。  
+除此外，希望你在使用代码时已经了解以下额外说明：
 
-1. 二次分发版必须同样遵循 GPL 3.0 协议，**开源且免费**
-2. **合法合规使用代码，禁止用于商业用途; 修改后的软件造成的任何问题由使用此代码的开发者承担**
-3. 打包、二次分发 **请保留代码出处**：https://github.com/maotoumao/MusicFree
-4. 如果使用此代码的开发者不同意以上三条，则视为 **二次分发版中修改部分的代码遵守 CC0 协议**
-5. 如果开源协议变更，将在此 Github 仓库更新，不另行通知。
+1. 打包、二次分发 **请保留代码出处**：https://github.com/maotoumao/MusicFree
+2. 请不要用于商业用途，合法合规使用代码；
+3. 如果开源协议变更，将在此 Github 仓库更新，不另行通知。
 
 ## 特性
 
@@ -42,7 +41,7 @@
 
 - 插件支持的功能：搜索（音乐、专辑、作者）、播放、查看专辑、查看作者详细信息、导入单曲、导入歌单、获取歌词等。
 
-- 定制化、无广告：本软件提供了浅色、深色模式；支持自定义背景；本软件基于 GPL 协议开源，~~一个 star 做交易~~ 将会保持免费。
+- 定制化、无广告：本软件提供了浅色、深色模式；支持自定义背景；本软件基于 AGPL 协议开源，~~一个 star 做交易~~ 将会保持免费。
 - 隐私：所有的数据都存储在本地，本软件不会收集你的任何个人信息。
 - 歌词关联：你可以把两首歌的歌词关联起来，比如将歌曲 A 的歌词关联到歌曲 B，关联后 A、B 两首歌都将显示歌曲 B 的歌词。你也可以关联多首歌的歌词，如 A->B->C，这样 A、B、C 三首歌都将显示 C 的歌词。
 
@@ -52,7 +51,7 @@
 
 插件本质上是一个满足插件协议的 commonjs 模块。插件中定义了搜索（音乐、专辑、作者）、播放、查看专辑、作者详细信息、导入歌单、获取歌词等基本函数，插件的开发者只需要关心输入输出逻辑，至于分页、缓存等全都交给 MusicFree 控制即可。本软件通过插件来完成播放器的所有功能，这样解耦的设计也可以使得本软件可以专注于做一个功能完善的播放器，我直呼小而美。
 
-插件开发文档可以参考 [这里](https://musicfree.upup.fun/plugin/introduction.html)
+插件开发文档可以参考 [这里](https://musicfree.catcat.work/plugin/introduction.html)
 
 需要注意的是：
 
@@ -67,7 +66,7 @@
 
 你可以直接点击从网络安装插件，然后输入<https://gitee.com/maotoumao/MusicFreePlugins/raw/master/plugins.json> ，点击确认即可安装。
 
-图文版详细使用说明可以参考公众号：[MusicFree 插件使用指南](https://mp.weixin.qq.com/s?__biz=MzkxOTM5MDI4MA==&mid=2247483875&idx=1&sn=aedf8bb909540634d927de7fd2b4b8b1&chksm=c1a390c4f6d419d233908bb781d418c6b9fd2ca82e9e93291e7c93b8ead3c50ca5ae39668212#rd)，或者站点： https://musicfree.upup.fun/usage/mobile/install-plugin.html
+图文版详细使用说明可以参考公众号：[MusicFree 插件使用指南](https://mp.weixin.qq.com/s?__biz=MzkxOTM5MDI4MA==&mid=2247483875&idx=1&sn=aedf8bb909540634d927de7fd2b4b8b1&chksm=c1a390c4f6d419d233908bb781d418c6b9fd2ca82e9e93291e7c93b8ead3c50ca5ae39668212#rd)，或者站点： https://musicfree.catcat.work/usage/mobile/install-plugin.html
 
 ## 下载地址
 
@@ -75,7 +74,7 @@
 
 ## Q&A
 
-使用时遇到的常见问题可以看这里：[MusicFree 使用 Q&A](https://musicfree.upup.fun/qa/common.html)
+使用时遇到的常见问题可以看这里：[MusicFree 使用 Q&A](https://musicfree.catcat.work/qa/common.html)
 
 技术交流/一起写点有意思的东西/技术向的闲聊欢迎加群：[683467814](https://jq.qq.com/?_wv=1027&k=upVpi2k3)~ （不是答疑群）
 
@@ -105,7 +104,7 @@
 [点击这里](./changelog.md)
 
 ---
-本项目仅供学习参考使用，基于 GPL3.0 协议开源；请在符合法律法规的情况下合理使用本项目，禁止用于商业目的使用。
+本项目仅供学习参考使用，基于 AGPL3.0 协议开源；请在符合法律法规的情况下合理使用本项目，禁止用于商业目的使用。
 
 ## 应用截图
 
@@ -118,27 +117,27 @@
 #### 侧边栏
 
 - 基础设置
-![基础设置](./.imgs/basic-setting.jpg)
+  ![基础设置](./.imgs/basic-setting.jpg)
 
 - 主题设置
-![主题设置](./.imgs/theme-setting.jpg)
+  ![主题设置](./.imgs/theme-setting.jpg)
 
 #### 音乐相关
 
 - 歌单页
-![歌单页](./.imgs/song-sheet.jpg)
+  ![歌单页](./.imgs/song-sheet.jpg)
 
 - 歌单内检索
-![歌单内检索](./.imgs/search-in-sheet.jpg)
+  ![歌单内检索](./.imgs/search-in-sheet.jpg)
 
 - 播放页
-![播放页](./.imgs/song-cover.jpg)
+  ![播放页](./.imgs/song-cover.jpg)
 
 - 歌词页
-![歌词页](./.imgs/song-lrc.jpg)
+  ![歌词页](./.imgs/song-lrc.jpg)
 
 
 #### 搜索相关
 
 - 作者信息
-![专辑信息](./.imgs/artist-detail.jpg)
+  ![专辑信息](./.imgs/artist-detail.jpg)

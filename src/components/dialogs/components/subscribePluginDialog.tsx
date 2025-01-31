@@ -6,6 +6,7 @@ import {hideDialog} from '../useDialog';
 import Dialog from './base';
 import Input from '@/components/base/input';
 import useColors from '@/hooks/useColors';
+
 interface ISubscribeItem {
     name: string;
     url: string;
@@ -42,7 +43,7 @@ export default function SubscribePluginDialog(
                 <View style={style.headerWrapper}>
                     <ThemeText>名称: </ThemeText>
                     <Input
-                        hasHorizonalPadding={false}
+                        hasHorizontalPadding={false}
                         style={[style.textInput, textColors]}
                         value={name}
                         onChangeText={t => {
@@ -53,7 +54,7 @@ export default function SubscribePluginDialog(
                 <View style={style.headerWrapper}>
                     <ThemeText>URL: </ThemeText>
                     <Input
-                        hasHorizonalPadding={false}
+                        hasHorizontalPadding={false}
                         style={[style.textInput, textColors]}
                         value={url}
                         onChangeText={t => {

@@ -9,13 +9,16 @@ import Panels from '@/components/panels';
 import PageBackground from '@/components/base/pageBackground';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import Debug from '@/components/debug';
-import {ImageViewComponent} from '@/components/imageViewer';
 import {PortalHost} from '@/components/base/portal';
 import globalStyle from '@/constants/globalStyle';
 import Theme from '@/core/theme';
 import {BootstrapComp} from './useBootstrap';
 import {ToastBaseComponent} from '@/components/base/toast';
 import {StatusBar} from 'react-native';
+import {ReducedMotionConfig, ReduceMotion} from 'react-native-reanimated';
+/**
+ * 字体颜色
+ */
 
 /**
  * 字体颜色
@@ -33,6 +36,7 @@ export default function Pages() {
     return (
         <>
             <BootstrapComp />
+            <ReducedMotionConfig mode={ReduceMotion.Never} />
             <GestureHandlerRootView style={globalStyle.flex1}>
                 <SafeAreaProvider>
                     <NavigationContainer theme={theme} ref={navigationRef}>
@@ -55,7 +59,6 @@ export default function Pages() {
 
                         <Panels />
                         <Dialogs />
-                        <ImageViewComponent />
                         <Debug />
                         <PortalHost />
                         <ToastBaseComponent />

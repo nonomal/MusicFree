@@ -9,7 +9,7 @@ import {
     View,
     ViewStyle,
 } from 'react-native';
-import rpx, {vh} from '@/utils/rpx';
+import rpx, {vh, vw} from '@/utils/rpx';
 import Animated, {
     useAnimatedStyle,
     useSharedValue,
@@ -21,20 +21,33 @@ import ThemeText from '@/components/base/themeText';
 import Divider from '@/components/base/divider';
 import {fontSizeConst} from '@/constants/uiConst';
 import {ScrollView} from 'react-native-gesture-handler';
+import useOrientation from '@/hooks/useOrientation.ts';
 
 interface IDialogProps {
     onDismiss?: () => void;
     children?: ReactNode;
 }
+
 function Dialog(props: IDialogProps) {
     const {children, onDismiss} = props;
 
     const sharedShowValue = useSharedValue(0);
     const colors = useColors();
     const backHandlerRef = useRef<NativeEventSubscription>();
+    const orientation = useOrientation();
+
+    // 对话框宽度
+    const dialogContainerStyle: ViewStyle =
+        orientation === 'vertical'
+            ? {
+                  width: vw(100) - rpx(72),
+              }
+            : {
+                  width: '80%',
+              };
 
     useEffect(() => {
-        sharedShowValue.value = withTiming(1, timingConfig.animationFast);
+        sharedShowValue.value = 1;
         if (backHandlerRef.current) {
             backHandlerRef.current?.remove();
             backHandlerRef.current = undefined;
@@ -48,7 +61,7 @@ function Dialog(props: IDialogProps) {
         );
 
         return () => {
-            sharedShowValue.value = withTiming(0, timingConfig.animationFast);
+            sharedShowValue.value = 0;
             if (backHandlerRef.current) {
                 backHandlerRef.current?.remove();
                 backHandlerRef.current = undefined;
@@ -58,15 +71,21 @@ function Dialog(props: IDialogProps) {
 
     const containerStyle = useAnimatedStyle(() => {
         return {
-            opacity: sharedShowValue.value,
+            opacity: withTiming(
+                sharedShowValue.value,
+                timingConfig.animationFast,
+            ),
         };
     });
 
-    const scaleStyle = useAnimatedStyle(() => {
+    const scaleAnimationStyle = useAnimatedStyle(() => {
         return {
             transform: [
                 {
-                    scale: 0.9 + sharedShowValue.value * 0.1,
+                    scale: withTiming(
+                        0.9 + sharedShowValue.value * 0.1,
+                        timingConfig.animationFast,
+                    ),
                 },
             ],
         };
@@ -82,8 +101,9 @@ function Dialog(props: IDialogProps) {
             <Animated.View
                 style={[
                     styles.dialogContainer,
+                    dialogContainerStyle,
                     containerStyle,
-                    scaleStyle,
+                    scaleAnimationStyle,
                     {
                         backgroundColor: colors.backdrop,
                         shadowColor: colors.shadow,

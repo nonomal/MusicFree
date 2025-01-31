@@ -9,37 +9,23 @@ import {isSameMediaItem} from '@/utils/mediaItem';
 import {getQualityOrder} from '@/utils/qualities';
 import StateMapper from '@/utils/stateMapper';
 import Toast from '@/utils/toast';
-import produce from 'immer';
+import {produce} from 'immer';
 import {InteractionManager} from 'react-native';
-import {downloadFile, exists} from 'react-native-fs';
+import {copyFile, downloadFile, exists, unlink} from 'react-native-fs';
 
 import Config from './config';
 import LocalMusicSheet from './localMusicSheet';
 import MediaMeta from './mediaExtra';
 import Network from './network';
 import PluginManager from './pluginManager';
-import {PERMISSIONS, check} from 'react-native-permissions';
+import {check, PERMISSIONS} from 'react-native-permissions';
 import path from 'path-browserify';
 import {
     getCurrentDialog,
     hideDialog,
     showDialog,
 } from '@/components/dialogs/useDialog';
-// import PQueue from 'p-queue/dist';
-// import PriorityQueue from 'p-queue/dist/priority-queue';
-
-// interface IDownloadProgress {
-//     progress: number;
-//     size: number;
-// }
-
-// const downloadQueue = new PQueue({
-//     concurrency: 3
-// });
-
-// const downloadProgress = new Map<string, IDownloadProgress>();
-// downloadQueue.concurrency = 3;
-// console.log(downloadQueue.concurrency);
+import {nanoid} from 'nanoid';
 
 /** 队列中的元素 */
 interface IDownloadMusicOptions {
@@ -83,13 +69,21 @@ const getExtensionName = (url: string) => {
 };
 
 /** 生成下载文件 */
-const getDownloadPath = (fileName?: string) => {
+const getDownloadPath = (fileName: string) => {
     const dlPath =
         Config.get('setting.basic.downloadPath') ?? pathConst.downloadMusicPath;
     if (!dlPath.endsWith('/')) {
         return `${dlPath}/${fileName ?? ''}`;
     }
     return fileName ? dlPath + fileName : dlPath;
+};
+
+const getCacheDownloadPath = (fileName: string) => {
+    const cachePath = pathConst.downloadCachePath;
+    if (!cachePath.endsWith('/')) {
+        return `${cachePath}/${fileName ?? ''}`;
+    }
+    return fileName ? cachePath + fileName : cachePath;
 };
 
 /** 从待下载中移除 */
@@ -237,12 +231,15 @@ async function downloadNext() {
         extension = 'mp3';
     }
     /** 目标下载地址 */
+    const cacheDownloadPath = addFileScheme(
+        getCacheDownloadPath(`${nanoid()}.${extension}`),
+    );
     const targetDownloadPath = addFileScheme(
         getDownloadPath(`${nextDownloadItem.filename}.${extension}`),
     );
     const {promise, jobId} = downloadFile({
         fromUrl: url ?? '',
-        toFile: targetDownloadPath,
+        toFile: cacheDownloadPath,
         headers: headers,
         background: true,
         begin(res) {
@@ -271,8 +268,10 @@ async function downloadNext() {
     if (!folderExists) {
         await mkdirR(folder);
     }
+
     try {
         await promise;
+        await copyFile(cacheDownloadPath, targetDownloadPath);
         /** 下载完成 */
         LocalMusicSheet.addMusicDraft({
             ...musicItem,
@@ -316,6 +315,8 @@ async function downloadNext() {
             targetDownloadPath: targetDownloadPath,
         });
         hasError = true;
+    } finally {
+        await unlink(cacheDownloadPath);
     }
     removeFromDownloadingQueue(nextDownloadItem);
     downloadingProgress = produce(downloadingProgress, draft => {

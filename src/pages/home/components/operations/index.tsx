@@ -4,16 +4,24 @@ import rpx from '@/utils/rpx';
 import ActionButton from '../ActionButton';
 import {ROUTE_PATH, useNavigate} from '@/entry/router';
 import {ScrollView} from 'react-native-gesture-handler';
+import {IIconName} from '@/components/base/icon.tsx';
 
 interface IOperationsProps {
-    orientation?: 'horizonal' | 'vertical';
+    orientation?: 'horizontal' | 'vertical';
+}
+
+interface IActionOption {
+    iconName: IIconName;
+    iconColor?: string;
+    title: string;
+    action?: () => void;
 }
 
 export default function Operations(props: IOperationsProps) {
     const navigate = useNavigate();
     const {orientation} = props;
 
-    const actionButtons = [
+    const actionButtons: IActionOption[] = [
         {
             iconName: 'heart',
             iconColor: 'red',
@@ -39,14 +47,14 @@ export default function Operations(props: IOperationsProps) {
             },
         },
         {
-            iconName: 'trophy-outline',
+            iconName: 'trophy',
             title: '榜单',
             action() {
                 navigate(ROUTE_PATH.TOP_LIST);
             },
         },
         {
-            iconName: 'history',
+            iconName: 'clock-outline',
             title: '播放记录',
             action() {
                 navigate(ROUTE_PATH.HISTORY);
@@ -59,15 +67,15 @@ export default function Operations(props: IOperationsProps) {
             style={
                 orientation === 'vertical'
                     ? style.wrapper
-                    : style.horizonalWrapper
+                    : style.horizontalWrapper
             }
-            scrollEnabled={orientation === 'horizonal'}
+            scrollEnabled={orientation === 'horizontal'}
             showsHorizontalScrollIndicator={false}
             horizontal={orientation === 'vertical'}
             contentContainerStyle={
                 orientation === 'vertical'
                     ? style.contentWrapper
-                    : style.horizonalContentWrapper
+                    : style.horizontalContentWrapper
             }>
             {actionButtons.map(action => (
                 <ActionButton key={action.title} {...action} />
@@ -83,7 +91,7 @@ const style = StyleSheet.create({
         flexGrow: 0,
         flexShrink: 0,
     },
-    horizonalWrapper: {
+    horizontalWrapper: {
         marginTop: rpx(20),
         marginBottom: rpx(20),
         flexGrow: 0,
@@ -94,7 +102,7 @@ const style = StyleSheet.create({
         height: rpx(144),
         paddingHorizontal: rpx(24),
     },
-    horizonalContentWrapper: {
+    horizontalContentWrapper: {
         width: rpx(170),
         flexDirection: 'column',
         paddingVertical: rpx(24),

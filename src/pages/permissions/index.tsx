@@ -73,7 +73,7 @@ export default function Permissions() {
                 需要的所有权限，你可以从这里开启或关闭某些权限。
             </ThemeText>
             <ListItem
-                withHorizonalPadding
+                withHorizontalPadding
                 heightType="big"
                 onPress={() => {
                     LyricUtil.requestSystemAlertPermission();
@@ -85,7 +85,7 @@ export default function Permissions() {
                 <ThemeSwitch value={permissions.floatingWindow} />
             </ListItem>
             <ListItem
-                withHorizonalPadding
+                withHorizontalPadding
                 heightType="big"
                 onPress={() => {
                     NativeUtils.requestStoragePermission();
@@ -96,7 +96,7 @@ export default function Permissions() {
                 />
                 <ThemeSwitch value={permissions.fileStorage} />
             </ListItem>
-            {/* <ListItem withHorizonalPadding heightType="big">
+            {/* <ListItem withHorizontalPadding heightType="big">
                 <ListItem.Content
                     title="后台运行"
                     description="用以在后台播放音乐"></ListItem.Content>
